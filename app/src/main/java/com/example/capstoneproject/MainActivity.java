@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.capstoneproject.fragments.AlertsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,15 +30,17 @@ public class MainActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.action_alerts:
                         Toast.makeText(MainActivity.this, "Alerts!", Toast.LENGTH_SHORT).show();
-                        //fragment = new AlertsFragment();
+                        fragment = new AlertsFragment();
                         break;
                     case R.id.action_portfolio:
                         Toast.makeText(MainActivity.this, "Portfolio!", Toast.LENGTH_SHORT).show();
+                        fragment = new AlertsFragment();
                         //fragment = new PortfolioFragment();
                         break;
                     case R.id.action_news:
                     default:
                         Toast.makeText(MainActivity.this, "News!", Toast.LENGTH_SHORT).show();
+                        fragment = new AlertsFragment();
                         //fragment = new NewsFragment();
                         break;
                 }
