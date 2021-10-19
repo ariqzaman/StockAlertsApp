@@ -3,8 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/kingl/AndroidStudioProjects/CapstoneProject/app/src/main/res/layout/activity_main.xml" value="0.3625" />
+        <entry key="..\:/Users/kingl/AndroidStudioProjects/CapstoneProject/app/src/main/res/drawable-v24/ic_delete.xml" value="0.37864583333333335" />
+        <entry key="..\:/Users/kingl/AndroidStudioProjects/CapstoneProject/app/src/main/res/layout/activity_alerts_add.xml" value="0.3625" />
+        <entry key="..\:/Users/kingl/AndroidStudioProjects/CapstoneProject/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/Users/kingl/AndroidStudioProjects/CapstoneProject/app/src/main/res/layout/activity_main2.xml" value="0.29322916666666665" />
         <entry key="..\:/Users/kingl/AndroidStudioProjects/CapstoneProject/app/src/main/res/layout/fragment_alerts.xml" value="0.20260416666666667" />
+        <entry key="..\:/Users/kingl/AndroidStudioProjects/CapstoneProject/app/src/main/res/layout/fragment_alerts_add.xml" value="0.3140625" />
+        <entry key="..\:/Users/kingl/AndroidStudioProjects/CapstoneProject/app/src/main/res/layout/item_alerts.xml" value="0.3625" />
         <entry key="..\:/Users/kingl/AndroidStudioProjects/CapstoneProject/app/src/main/res/menu/menu_bottom_navigation.xml" value="0.3625" />
       </map>
     </option>
