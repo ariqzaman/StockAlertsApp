@@ -34,8 +34,11 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.action_portfolio:
                         Toast.makeText(MainActivity.this, "Portfolio!", Toast.LENGTH_SHORT).show();
-                        fragment = new AlertsFragment();
+
+                        //change this to your fragment, for example:
                         //fragment = new PortfolioFragment();
+                        fragment = new AlertsFragment();
+
                         break;
                     case R.id.action_news:
                     default:
