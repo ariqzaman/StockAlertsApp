@@ -6,13 +6,12 @@ Stock and Crypto Alerts App for Hunter College CSCI Capstone course.
 Group members:
 
 
-[Ariq Zaman](https://github.com/ariqzaman) - Add graphs and stock info
+[Ariq Zaman](https://github.com/ariqzaman) - Graphs
 
 [Brian Nan](https://github.com/DogEnjoyer) - Portfolio
 
-[Isaac Anzures](https://github.com/ianzures) - News screen
+[Isaac Anzures](https://github.com/ianzures) - News 
 
-[Jimmy Wu](https://github.com/Jimmy-2) - Homepage screen and add/edit alerts screen
+[Jimmy Wu](https://github.com/Jimmy-2) - Alerts
 
-[Kevin Vo](https://github.com/monogear) - Backend stock and cryptocurrency data retrieval
-
+[Kevin Vo](https://github.com/monogear) - Alerts Notification
