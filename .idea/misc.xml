@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/L/Documents/GitHub/StockAlertsApp/app/src/main/res/layout/fragment_portfolio.xml" value="0.1793478260869565" />
+        <entry key="..\:/Users/L/Documents/GitHub/StockAlertsApp/app/src/main/res/layout/popupaddstockcrypto.xml" value="0.1793478260869565" />
+        <entry key="..\:/Users/L/Documents/GitHub/StockAlertsApp/app/src/main/res/layout/portfolio_recycler_resource.xml" value="0.6" />
         <entry key="..\:/Users/kingl/AndroidStudioProjects/CapstoneProject/app/src/main/res/drawable-v24/ic_delete.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/kingl/AndroidStudioProjects/CapstoneProject/app/src/main/res/layout/activity_alerts_add.xml" value="0.3625" />
         <entry key="..\:/Users/kingl/AndroidStudioProjects/CapstoneProject/app/src/main/res/layout/activity_main.xml" value="0.2" />
