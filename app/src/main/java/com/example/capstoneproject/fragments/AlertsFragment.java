@@ -9,11 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
@@ -90,16 +94,19 @@ public class AlertsFragment extends Fragment {
         btnSearchAlert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                searchedStock = etSearchAlert.getText().toString();
-                AlertsAddFragment newFragment = new AlertsAddFragment();
+                goToAddFragment();
+            }
+        });
 
-                //using bundle to pass data to another fragment
-                Bundle args = new Bundle();
-                //key, value
-                args.putString("ticker", searchedStock );
-                newFragment.setArguments(args);
-                //add a stack so we can click back button to go back
-                getFragmentManager().beginTransaction().replace(R.id.flContainer, newFragment).addToBackStack(null).commit();
+        etSearchAlert.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    //Toast.makeText(getContext(), etSearchAlert.getText().toString(), Toast.LENGTH_SHORT).show();
+                    goToAddFragment();
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -107,12 +114,21 @@ public class AlertsFragment extends Fragment {
 
     }
 
+    void goToAddFragment() {
+        searchedStock = etSearchAlert.getText().toString();
+        AlertsAddFragment newFragment = new AlertsAddFragment();
 
-    public void refresh() {
-        getFragmentManager().beginTransaction().replace(R.id.flContainer, new AlertsFragment()).commit();
-
-
+        //using bundle to pass data to another fragment
+        Bundle args = new Bundle();
+        //key, value
+        args.putString("ticker", searchedStock );
+        newFragment.setArguments(args);
+        //add a stack so we can click back button to go back
+        getFragmentManager().beginTransaction().replace(R.id.flContainer, newFragment).addToBackStack(null).commit();
     }
+
+
+
 
 
     @Override

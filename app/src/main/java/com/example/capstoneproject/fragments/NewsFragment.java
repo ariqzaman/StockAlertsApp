@@ -44,6 +44,8 @@ public class NewsFragment extends Fragment {
     ArticleAdapter articleAdapter;
     AsyncHttpClient client;
     int numItems = 20;
+    String url;
+    String tickers;
 
     private RequestQueue requestQueue;
 
@@ -92,6 +94,7 @@ public class NewsFragment extends Fragment {
                     jsonParse();
                     return true;
                 }
+
                 return false;
             }
         });
@@ -122,14 +125,15 @@ public class NewsFragment extends Fragment {
         swipeRefreshLayout.setRefreshing(false);
     }
     private void jsonParse(){
-        String tickers = tvSearch.getText().toString();;
-        String url = String.format("https://stocknewsapi.com/api/v1?tickers=%s,&items=%d&token=i0rpdgcnbrcgaimxbclxhztmuu6sk8jm79zcludj&fbclid=IwAR0pguARasu-pDs_Jcy4Wc4fCL_JIXCjRc_JYwsSN57xOSCnhleL3I2LDHA",tickers,numItems);
+        tickers = tvSearch.getText().toString();;
+        url = String.format("https://stocknewsapi.com/api/v1?tickers=%s,&items=%d&token=i0rpdgcnbrcgaimxbclxhztmuu6sk8jm79zcludj&fbclid=IwAR0pguARasu-pDs_Jcy4Wc4fCL_JIXCjRc_JYwsSN57xOSCnhleL3I2LDHA",tickers,numItems);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            articles.clear();
                             JSONArray results = response.getJSONArray("data");// results is an array in the json
                             articles.addAll(Article.fromJsonArray(results));
                             articleAdapter.notifyDataSetChanged();
@@ -146,6 +150,10 @@ public class NewsFragment extends Fragment {
         });
 
         requestQueue.add(request);
+
+
     }
+
+
 
 }
