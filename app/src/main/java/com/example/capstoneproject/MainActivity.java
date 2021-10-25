@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.capstoneproject.fragments.AlertsFragment;
+import com.example.capstoneproject.fragments.NewsFragment;
+import com.example.capstoneproject.fragments.PortfolioFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -38,21 +40,20 @@ public class MainActivity extends AppCompatActivity {
                         //Toast.makeText(MainActivity.this, "Portfolio!", Toast.LENGTH_SHORT).show();
 
                         //change this to your fragment, for example:
-                        //fragment = new PortfolioFragment();
-                        fragment = new AlertsFragment();
+                        fragment = new PortfolioFragment();
+
 
                         break;
                     case R.id.action_news:
                     default:
                         //Toast.makeText(MainActivity.this, "News!", Toast.LENGTH_SHORT).show();
-                        fragment = new AlertsFragment();
-                        //fragment = new NewsFragment();
+
+                        fragment = new NewsFragment();
                         break;
                 }
-                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment, "SOMETAG").commit();
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
 
-                AlertsFragment fragmentDemo = (AlertsFragment)
-                        getSupportFragmentManager().findFragmentByTag("SOMETAG");
+
 
                 return true;
             }
