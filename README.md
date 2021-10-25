@@ -14,4 +14,4 @@ Group members:
 
 [Jimmy Wu](https://github.com/Jimmy-2) - Alerts
 
-[Kevin Vo](https://github.com/monogear) - Alerts Notification
+[Kevin Vo](https://github.com/monogear) - Notifications
