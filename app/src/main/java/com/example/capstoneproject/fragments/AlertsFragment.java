@@ -1,10 +1,9 @@
 package com.example.capstoneproject.fragments;
 
-import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -13,41 +12,47 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.capstoneproject.AlertsAdapter;
-import com.example.capstoneproject.AlertsAddActivity;
+import com.example.capstoneproject.AlertsDatabaseHelper;
 import com.example.capstoneproject.R;
-import com.example.capstoneproject.models.Alert;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Set;
 
 import okhttp3.Headers;
 
 
 public class AlertsFragment extends Fragment {
-    String apiSymbols = "aapl,fb";
-    public String TEST_API = "https://api.twelvedata.com/price?symbol="+apiSymbols+"&apikey=c2c894e47847490993e8704e2fe75dd6";
     public static final String TAG = "HomeAlerts"; // testing for logcat
 
-    EditText etSearchAlert;
-    Button btnSearchAlert;
     static String searchedStock = "";
+    AlertsDatabaseHelper alertDB;
+    ArrayList<String> alert_id, symbol, name, currentPrice, alertPrice;
+    AlertsAdapter alertsAdapter;
 
     SwipeRefreshLayout swipeContainer;
+    RecyclerView recyclerView;
+    ImageButton btnSearchAlert;
+    EditText etSearchAlert;
 
-    private static ArrayList<Alert> alertsList;
-    private RecyclerView recyclerView;
-    static AlertsAdapter adapter;
+    //using hashset to get unique stock tickers
+    //HashSet<String> tickerSet = new HashSet<String>();
 
-    public static double currentPriceDB;
-    public static double alertPriceDB;
+
+    //Using hashtable to store new stock prices as values and the stock ticker symbols as the keys
+    Hashtable<String, String> alertHashTable = new Hashtable<String, String>();
+
+    String batchTicker = "";
+
 
 
     public AlertsFragment() {
@@ -61,12 +66,8 @@ public class AlertsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_alerts, container, false);
-    }
+        View view =  inflater.inflate(R.layout.fragment_alerts, container, false);
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         swipeContainer = view.findViewById(R.id.swipeContainer);
 
         // Configure the refreshing colors
@@ -79,17 +80,10 @@ public class AlertsFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //getNewCurrentPrice();
+                getNewCurrentPrice();
                 swipeContainer.setRefreshing(false);
             }
         });
-
-        recyclerView = view.findViewById(R.id.rvAlerts);
-
-
-        setAlertInfo();
-        setAdapter();
-
 
         etSearchAlert = view.findViewById(R.id.etSearchAlert);
         btnSearchAlert = view.findViewById(R.id.btnSearchAlert);
@@ -97,87 +91,136 @@ public class AlertsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 searchedStock = etSearchAlert.getText().toString();
-                //goAlertsAddActivity();
-                Intent intent = new Intent(getActivity(), AlertsAddActivity.class);
-                intent.putExtra("ticker", searchedStock);
-                startActivity(intent);
+                AlertsAddFragment newFragment = new AlertsAddFragment();
+
+                //using bundle to pass data to another fragment
+                Bundle args = new Bundle();
+                //key, value
+                args.putString("ticker", searchedStock );
+                newFragment.setArguments(args);
+                //add a stack so we can click back button to go back
+                getFragmentManager().beginTransaction().replace(R.id.flContainer, newFragment).addToBackStack(null).commit();
             }
         });
+
+        return view;
+
     }
 
-    private void setAdapter() {
-        adapter = new AlertsAdapter(alertsList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new AlertsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                testing(position, "Clicked");
+
+    public void refresh() {
+        getFragmentManager().beginTransaction().replace(R.id.flContainer, new AlertsFragment()).commit();
+
+
+    }
+
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        recyclerView = view.findViewById(R.id.rvAlerts);
+
+
+        alertDB = new AlertsDatabaseHelper(getActivity());
+        alert_id = new ArrayList<>();
+        symbol = new ArrayList<>();
+        name = new ArrayList<>();
+        currentPrice = new ArrayList<>();
+        alertPrice = new ArrayList<>();
+
+        //grab data from readAllData() and store it in array
+        storeDataInArrays();
+
+        alertsAdapter = new AlertsAdapter(getContext(), alert_id, symbol, name, currentPrice, alertPrice);
+        recyclerView.setAdapter(alertsAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+
+    }
+
+
+
+    void storeDataInArrays() {
+        Cursor cursor = alertDB.readAllData();
+        if(cursor.getCount() == 0) {
+            //Toast.makeText(getContext(), "No data", Toast.LENGTH_SHORT).show();
+        }else {
+            while(cursor.moveToNext()) {
+                alert_id.add(cursor.getString(0));
+                symbol.add(cursor.getString(1));
+                name.add(cursor.getString(2));
+                currentPrice.add(cursor.getString(3));
+                alertPrice.add(cursor.getString(4));
+
             }
-
-            @Override
-            public void onDeleteClick(int position) {
-                removeItem(position);
-            }
-        });
-    }
-
-    private void setAlertInfo() {
-        alertsList = new ArrayList<>();
-
-
-    }
-
-    public static void insertItem(String symbol, String name, String currentPrice, String alertPrice) {
-        currentPriceDB = Double.parseDouble(currentPrice);
-        currentPriceDB = Math.round(currentPriceDB*100.00)/100.00;
-
-        alertPriceDB = Double.parseDouble(alertPrice);
-        alertPriceDB = Math.round(alertPriceDB*100.00)/100.00;
-
-        alertsList.add(0, new Alert(symbol,name, currentPriceDB, alertPriceDB));
-        adapter.notifyItemInserted(0);
-    }
-
-    public static void removeItem(int position) {
-        alertsList.remove(position);
-        adapter.notifyItemRemoved(position);
-    }
-
-    public void testing(int position, String text) {
-        alertsList.get(position).changeText(text);
-        adapter.notifyItemChanged(position);
-    }
-
-
-
-    public static String getSearchedStock() {
-        return searchedStock;
-    }
-
-    private void goAlertsAddActivity() {
-        //navigate to AlertsAddActivity from this activity
-        Intent i = new Intent(getContext(), AlertsAddActivity.class);
-        startActivity(i);
-
-
-
+        }
     }
 
     public void getNewCurrentPrice() {
+        AlertsDatabaseHelper alertDB = new AlertsDatabaseHelper(getActivity());
+        for(int i = 0; i < alertDB.getAlertsCount(); i++) {
+            alertHashTable.put(String.valueOf(symbol.get(i)), "0");
+
+            //add each stock ticker from the database into a hashset
+            //tickerSet.add(String.valueOf(symbol.get(i)));
+        }
+        Set<String> keys = alertHashTable.keySet();
+        for(String key: keys){
+            batchTicker = batchTicker.concat(key+",");
+        }
+        //System.out.println(batchTicker);
+        //batchTicker = TextUtils.join(",",tickerSet);
+
+
+        //api link to get batch stock prices
+        String TEST_API = "https://api.twelvedata.com/price?symbol="+batchTicker+"&apikey=c2c894e47847490993e8704e2fe75dd6";
+
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(TEST_API, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.d(TAG, "onSuccess");
                 JSONObject jsonObject = json.jsonObject;
+                String testing = "";
                 try {
                     //for testing
                     //refresh the prices of here
-                    JSONObject results = jsonObject.getJSONObject("aapl");
-                    String stock1 = results.getString("price");
+
+                    for(String key: keys){
+                        JSONObject results = jsonObject.getJSONObject(key);
+                        String stockPrice = results.getString("price");
+                        alertHashTable.put(key, stockPrice);
+                        System.out.println(key+stockPrice);
+                    }
+
+                    System.out.println(alertHashTable.toString());
+
+                    //count each database item (recyclerview item count) and update it's currentPrice with the new one from the api call. Increment through its position
+                    for(int i = 0; i < alertDB.getAlertsCount(); i++) {
+                        alertDB.updatePriceDatabase(String.valueOf(alert_id.get(i)), alertHashTable.get(symbol.get(i)));
+                    }
+                    //restart the current fragment with a new version in order to show the updated data
+                    getFragmentManager().beginTransaction().replace(R.id.flContainer, new AlertsFragment()).commit();
+
+
+
+                    //String currentPrice = String.valueOf(alertDB.getAlertsCount());
+                    // alertDB.updatePriceDatabase(String.valueOf(alert_id.get(0)), alert_id.get(0));
+
+                    /*
+                    List<String> objectList = new ArrayList<String>(tickerSet);
+                    for(int i = 0; i < objectList.size(); i++) {
+                        JSONObject results = jsonObject.getJSONObject(objectList.get(i));
+                        String stockPrice = results.getString("price");
+                        System.out.println(objectList.get(i)+stockPrice);
+
+
+                    }
+
+                    */
+
 
 
                 } catch (JSONException e) {
@@ -195,7 +238,10 @@ public class AlertsFragment extends Fragment {
             }
         });
 
+
+
+
+
+
     }
-
-
 }

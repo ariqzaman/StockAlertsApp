@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_alerts"
-        android:icon="@android:drawable/ic_dialog_alert"
+        android:icon="@drawable/ic_baseline_circle_notifications_24"
         android:title="Alerts"
         app:showAsAction="always" />
     <item

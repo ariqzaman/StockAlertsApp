@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.example.capstoneproject.fragments.AlertsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+
+
 public class MainActivity extends AppCompatActivity {
 
     final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -29,11 +31,11 @@ public class MainActivity extends AppCompatActivity {
                 Fragment fragment;
                 switch (menuItem.getItemId()) {
                     case R.id.action_alerts:
-                        Toast.makeText(MainActivity.this, "Alerts!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "Alerts!", Toast.LENGTH_SHORT).show();
                         fragment = new AlertsFragment();
                         break;
                     case R.id.action_portfolio:
-                        Toast.makeText(MainActivity.this, "Portfolio!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "Portfolio!", Toast.LENGTH_SHORT).show();
 
                         //change this to your fragment, for example:
                         //fragment = new PortfolioFragment();
@@ -42,17 +44,30 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.action_news:
                     default:
-                        Toast.makeText(MainActivity.this, "News!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "News!", Toast.LENGTH_SHORT).show();
                         fragment = new AlertsFragment();
                         //fragment = new NewsFragment();
                         break;
                 }
-                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment, "SOMETAG").commit();
+
+                AlertsFragment fragmentDemo = (AlertsFragment)
+                        getSupportFragmentManager().findFragmentByTag("SOMETAG");
+
                 return true;
             }
 
         });
         // Set default selection
         bottomNavigationView.setSelectedItemId(R.id.action_alerts);
+    }
+
+
+    //pop/remove stack once we have successfully gone back to previous fragment
+    public void onBackPressed()
+    {
+
+        FragmentManager fm = MainActivity.this.getSupportFragmentManager();
+        fm.popBackStack();
     }
 }
