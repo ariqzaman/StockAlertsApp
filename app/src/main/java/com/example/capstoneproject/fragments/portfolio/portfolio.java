@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.capstoneproject.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -38,7 +39,7 @@ public class portfolio extends Fragment {
     Vector<Integer> stockamounts = new Vector<Integer>();
     Vector<String> stocknames = new Vector<String>();
 
-    Button gotofragment2; //possibly going to be useless
+    FloatingActionButton gotofragment2; //possibly going to be useless
 
     //for recyclerview
     private ArrayList<portfoliostock> stocksnames;
