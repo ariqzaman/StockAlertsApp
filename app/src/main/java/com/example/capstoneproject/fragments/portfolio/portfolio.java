@@ -3,6 +3,7 @@ package com.example.capstoneproject.fragments.portfolio;
 import static android.icu.lang.UCharacter.toUpperCase;
 
 import android.app.AlertDialog;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,11 +13,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.capstoneproject.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,10 +42,16 @@ public class portfolio extends Fragment {
     Vector<Integer> stockamounts = new Vector<Integer>();
     Vector<String> stocknames = new Vector<String>();
 
+
+
+    myportfoliodatabase myDB;
+    ArrayList<String> book_id,book_title,book_author,book_pages;
+
     FloatingActionButton gotofragment2; //possibly going to be useless
 
     //for recyclerview
     private ArrayList<portfoliostock> stocksnames;
+    portfoliostockrecycleradapter portfoliostockadapter;
     private RecyclerView recyclerview;
 
     public portfolio() {
@@ -68,14 +77,23 @@ public class portfolio extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_portfolio,container,false);
         gotofragment2 = view.findViewById(R.id.addstockcryptobutton);
+        myDB = new myportfoliodatabase(getActivity());
+        book_id = new ArrayList<>();
+        book_author = new ArrayList<>();
+        book_title = new ArrayList<>();
+        book_pages = new ArrayList<>();
 
-
+        storeDatainArrays();
         //recycleview
         recyclerview = view.findViewById(R.id.recycleviewstocks);
-        stocksnames = new ArrayList<>();
+        portfoliostockadapter = new portfoliostockrecycleradapter(getActivity(),book_id,book_title,book_author,book_pages);
+        recyclerview.setAdapter(portfoliostockadapter);
+        recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //recyclerview = view.findViewById(R.id.recycleviewstocks);
+        //stocksnames = new ArrayList<>();
 
-        setstockinfo();
-        setAdapter();
+
+        //setAdapter();
         gotofragment2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,7 +106,7 @@ public class portfolio extends Fragment {
 
         return view;
     }
-
+/*
     private void setAdapter(){
         portfoliostockrecycleradapter adapter = new portfoliostockrecycleradapter(stocksnames);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
@@ -96,7 +114,7 @@ public class portfolio extends Fragment {
         recyclerview.setItemAnimator(new DefaultItemAnimator());
         recyclerview.setAdapter(adapter);
     }
-
+*/
 
     //this is for the add stock popup
     public void createNewDialog(){
@@ -120,19 +138,69 @@ public class portfolio extends Fragment {
         popup_savebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stocknames.add(toUpperCase(popup_stockname.getText().toString()));
+                myportfoliodatabase myDB = new myportfoliodatabase(getActivity());
+                myDB.addstock(popup_stockname.getText().toString().trim(), "5", 5);
+                /*stocknames.add(toUpperCase(popup_stockname.getText().toString()));
                 stockamounts.add(Integer.valueOf(popup_stockamount.getText().toString()));
-                stocksnames.add(new portfoliostock(toUpperCase(popup_stockname.getText().toString()),"5"));
-                setAdapter();
+                stocksnames.add(new portfoliostock(toUpperCase(popup_stockname.getText().toString()),"5",2));
+                //setAdapter(); */
                 dialog.dismiss();
 
             }
         });
     }
     //test functions
+    /*
     private void setstockinfo(){
-        stocksnames.add(new portfoliostock("AAPL","5"));
-        stocksnames.add(new portfoliostock("F","6"));
-        stocksnames.add(new portfoliostock("CLF","7"));
+        stocksnames.add(new portfoliostock("AAPL","5",2));
+        stocksnames.add(new portfoliostock("F","6",2));
+        stocksnames.add(new portfoliostock("CLF","7",2));
     }
+    */
+    void storeDatainArrays(){
+        Cursor cursor = myDB.readAllData();
+        if(cursor.getCount() == 0){
+            Toast.makeText(getActivity(),"No data",Toast.LENGTH_SHORT).show();
+        }else{
+            while(cursor.moveToNext()){
+                book_id.add(cursor.getString(0));
+                book_title.add(cursor.getString(1));
+                book_author.add(cursor.getString(2));
+                book_pages.add(cursor.getString(3));
+            }
+        }
+    }
+
 }
+
+
+/*
+Handler handler = new Handler();
+Runnable runnable;
+int delay = 15*1000; //Delay for 15 seconds.  One second = 1000 milliseconds.
+
+
+@Override
+protected void onResume() {
+   //start handler as activity become visible
+
+    handler.postDelayed( runnable = new Runnable() {
+        public void run() {
+            //do something
+        setstockinfo();
+            handler.postDelayed(runnable, delay);
+        }
+    }, delay);
+
+    super.onResume();
+}
+
+// If onPause() is not included the threads will double up when you
+// reload the activity
+
+@Override
+protected void onPause() {
+    handler.removeCallbacks(runnable); //stop handler when activity not visible
+    super.onPause();
+}
+*/
