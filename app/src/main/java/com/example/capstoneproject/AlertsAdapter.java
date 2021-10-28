@@ -5,6 +5,7 @@
 package com.example.capstoneproject;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.capstoneproject.fragments.AlertsFragment;
+import com.example.capstoneproject.fragments.StockGraphFragment;
 
 import java.util.ArrayList;
 
@@ -69,6 +71,19 @@ public class AlertsAdapter extends RecyclerView.Adapter<AlertsAdapter.MyViewHold
                 //go to ariq's graph fragment for the selected row's stock
 
                 //or allow user to edit alert. However this will depend on how kevin's code for notifications work
+
+
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                StockGraphFragment fragment = new StockGraphFragment();
+                //using bundle to pass data to another fragment
+                Bundle args = new Bundle();
+                //key, value
+                args.putString("stockTicker", String.valueOf(symbol.get(position)));
+                args.putString("graphTime", "5min");
+                System.out.println(symbol.get(position)+"HELLO");
+                fragment.setArguments(args);
+                //add a stack so we can click back button to go back
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
             }
         });
 

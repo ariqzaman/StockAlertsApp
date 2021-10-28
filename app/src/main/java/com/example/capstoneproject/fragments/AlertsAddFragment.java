@@ -89,7 +89,12 @@ public class AlertsAddFragment extends Fragment {
         swipeContainerAdd.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getStockPrice(stock);
+                //refresh AlertsAddFragment
+                AlertsAddFragment newFragment = new AlertsAddFragment();
+                Bundle args = new Bundle();
+                args.putString("ticker", stock);
+                newFragment.setArguments(args);
+                getFragmentManager().beginTransaction().replace(R.id.flContainer, newFragment).commit();
                 swipeContainerAdd.setRefreshing(false);
             }
         });

@@ -127,6 +127,17 @@ public class AlertsFragment extends Fragment {
         getFragmentManager().beginTransaction().replace(R.id.flContainer, newFragment).addToBackStack(null).commit();
     }
 
+    void goToGraphFragment(String stockTicker) {
+        StockGraphFragment newFragment = new StockGraphFragment();
+
+        //using bundle to pass data to another fragment
+        Bundle args = new Bundle();
+        //key, value
+        args.putString("ticker", stockTicker);
+        newFragment.setArguments(args);
+        //add a stack so we can click back button to go back
+        getFragmentManager().beginTransaction().replace(R.id.flContainer, newFragment).addToBackStack(null).commit();
+    }
 
 
 

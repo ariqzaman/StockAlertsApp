@@ -18,7 +18,7 @@
             android:layout_below="@+id/view"
             android:layout_marginTop="10dp"
             android:gravity="center_horizontal|center_vertical"
-            android:text="AAPL"
+            android:text="Loading..."
             android:textSize="35sp" />
 
         <TextView
@@ -40,7 +40,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="0dp"
-            android:text="142.9000"
+            android:text="Loading..."
             android:textSize="30sp" />
 
         <TextView
@@ -81,7 +81,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="0dp"
-            android:text="143.2900"
+            android:text="Loading..."
             android:textSize="30sp" />
 
         <TextView
@@ -103,7 +103,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="0dp"
-            android:text="-0.3900"
+            android:text="Loading..."
             android:textSize="30sp" />
 
         <TextView
@@ -114,7 +114,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="0dp"
-            android:text="-0.2722%"
+            android:text="Loading..."
             android:textSize="30sp" />
 
         <TextView
@@ -195,7 +195,7 @@
             android:layout_below="@+id/tvSymbol"
             android:layout_marginTop="0dp"
             android:gravity="center"
-            android:text="Apple Inc" />
+            android:text="Loading..." />
 
         <View
             android:id="@+id/view3"
