@@ -1,5 +1,7 @@
 package com.example.capstoneproject.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class NewsFragment extends Fragment {
     public static final String TAG = "MainActivity";
     EditText tvSearch;
@@ -44,11 +48,12 @@ public class NewsFragment extends Fragment {
     ArticleAdapter articleAdapter;
     AsyncHttpClient client;
     int numItems = 20;
-    String url;
     String tickers;
 
     private RequestQueue requestQueue;
 
+    SharedPreferences sharedPreferences;
+    String url ;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -85,13 +90,39 @@ public class NewsFragment extends Fragment {
 
         requestQueue = Volley.newRequestQueue(this.getContext());
 
+        sharedPreferences = getActivity().getSharedPreferences("MyUserPrefs", Context.MODE_PRIVATE);
+        //Toast.makeText(getContext(), sharedPreferences.getString("url", ""), Toast.LENGTH_SHORT).show();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, sharedPreferences.getString("url", "") , null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            articles.clear();
+                            JSONArray results = response.getJSONArray("data");// results is an array in the json
+                            articles.addAll(Article.fromJsonArray(results));
+                            articleAdapter.notifyDataSetChanged();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        requestQueue.add(request);
+
         tvSearch.setOnKeyListener(new View.OnKeyListener(){
             @Override
             public boolean onKey(View view, int i , KeyEvent keyEvent){
                 // If the event is a key-down event on the "enter" button
                 if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
                         (i == 66)) {
-                    jsonParse();
+                    jsonParse("");
                     return true;
                 }
 
@@ -115,18 +146,24 @@ public class NewsFragment extends Fragment {
                     }
                 }
         );
-
-
-
     }
 
-    private void updateOperation(){
-        jsonParse();
-        swipeRefreshLayout.setRefreshing(false);
-    }
-    private void jsonParse(){
-        tickers = tvSearch.getText().toString();;
-        url = String.format("https://stocknewsapi.com/api/v1?tickers=%s,&items=%d&token=i0rpdgcnbrcgaimxbclxhztmuu6sk8jm79zcludj&fbclid=IwAR0pguARasu-pDs_Jcy4Wc4fCL_JIXCjRc_JYwsSN57xOSCnhleL3I2LDHA",tickers,numItems);
+    private void jsonParse(String defURL){
+        tickers = tvSearch.getText().toString();
+
+        // if tickers is empty, the user must have left the fragment or done something to reinvoke onCreateView()
+        if(tickers == ""){
+            // in this case use the saved url from their previous interaction with this screen
+            Toast.makeText(getContext(), "Empty tickere", Toast.LENGTH_SHORT).show();
+            url = defURL;
+        }else{
+            // else the user must have entered a new set of tickers. save the new url in sharedPreferences
+            url = String.format("https://stocknewsapi.com/api/v1?tickers=%s,&items=%d&token=i0rpdgcnbrcgaimxbclxhztmuu6sk8jm79zcludj&fbclid=IwAR0pguARasu-pDs_Jcy4Wc4fCL_JIXCjRc_JYwsSN57xOSCnhleL3I2LDHA",tickers,numItems);
+            // save url in shared preferences
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("url", url);
+            editor.commit();
+        }
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -150,9 +187,13 @@ public class NewsFragment extends Fragment {
         });
 
         requestQueue.add(request);
-
-
     }
+
+    private void updateOperation(){
+        jsonParse("");
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
 
 
 
