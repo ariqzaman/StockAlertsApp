@@ -1,5 +1,7 @@
 package com.example.capstoneproject.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class NewsFragment extends Fragment {
     public static final String TAG = "MainActivity";
     EditText tvSearch;
@@ -44,11 +48,12 @@ public class NewsFragment extends Fragment {
     ArticleAdapter articleAdapter;
     AsyncHttpClient client;
     int numItems = 20;
-    String url;
     String tickers;
 
     private RequestQueue requestQueue;
 
+    SharedPreferences sharedPreferences;
+    String url ;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -85,6 +90,9 @@ public class NewsFragment extends Fragment {
 
         requestQueue = Volley.newRequestQueue(this.getContext());
 
+        sharedPreferences = getActivity().getSharedPreferences("MyUserPrefs", Context.MODE_PRIVATE);
+        Toast.makeText(getContext(), sharedPreferences.getString("url", ""), Toast.LENGTH_SHORT).show();
+
         tvSearch.setOnKeyListener(new View.OnKeyListener(){
             @Override
             public boolean onKey(View view, int i , KeyEvent keyEvent){
@@ -115,18 +123,16 @@ public class NewsFragment extends Fragment {
                     }
                 }
         );
-
-
-
     }
 
-    private void updateOperation(){
-        jsonParse();
-        swipeRefreshLayout.setRefreshing(false);
-    }
     private void jsonParse(){
         tickers = tvSearch.getText().toString();;
         url = String.format("https://stocknewsapi.com/api/v1?tickers=%s,&items=%d&token=i0rpdgcnbrcgaimxbclxhztmuu6sk8jm79zcludj&fbclid=IwAR0pguARasu-pDs_Jcy4Wc4fCL_JIXCjRc_JYwsSN57xOSCnhleL3I2LDHA",tickers,numItems);
+
+        // save url in shared preferences
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("url", url);
+        editor.commit();
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -150,9 +156,13 @@ public class NewsFragment extends Fragment {
         });
 
         requestQueue.add(request);
-
-
     }
+
+    private void updateOperation(){
+        jsonParse();
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
 
 
 
