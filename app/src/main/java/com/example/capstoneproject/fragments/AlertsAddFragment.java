@@ -163,7 +163,7 @@ public class AlertsAddFragment extends Fragment {
             //move back to AlertsFragment
             moveToAlertsHome();
 
-        /
+
 
         }
     }

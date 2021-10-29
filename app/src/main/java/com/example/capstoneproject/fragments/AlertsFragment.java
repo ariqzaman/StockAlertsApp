@@ -110,6 +110,8 @@ public class AlertsFragment extends Fragment {
             }
         });
 
+
+
         return view;
 
     }
@@ -164,7 +166,7 @@ public class AlertsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
-
+        //getNewCurrentPrice();
     }
 
 
