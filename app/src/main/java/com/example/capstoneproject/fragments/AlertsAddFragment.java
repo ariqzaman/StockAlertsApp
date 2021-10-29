@@ -8,9 +8,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -128,28 +130,42 @@ public class AlertsAddFragment extends Fragment {
         btnSetAlert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(etPriceMovement.getText().toString().isEmpty()) {
-                    Toast.makeText(getContext(), "Alert price cannot be empty!", Toast.LENGTH_SHORT).show();
-                }else {
-                    //add a new alert to the database table
-                    AlertsDatabaseHelper alertDB = new AlertsDatabaseHelper(getActivity());
-                    alertDB.addAlert(tvSymbol.getText().toString().trim(),
-                            tvName.getText().toString().trim(),
-                            Double.valueOf(tvPrice.getText().toString().trim()),
-                            Double.valueOf(etPriceMovement.getText().toString().trim()));
-
-                    //move back to AlertsFragment
-                    moveToAlertsHome();
-
-
-
-                }
+                addPriceToDB();
 
 
             }
         });
+        etPriceMovement.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    addPriceToDB();
+                    return true;
+                }
+                return false;
+            }
+        });
 
 
+    }
+
+    void addPriceToDB() {
+        if(etPriceMovement.getText().toString().isEmpty()) {
+            Toast.makeText(getContext(), "Alert price cannot be empty!", Toast.LENGTH_SHORT).show();
+        }else {
+            //add a new alert to the database table
+            AlertsDatabaseHelper alertDB = new AlertsDatabaseHelper(getActivity());
+            alertDB.addAlert(tvSymbol.getText().toString().trim(),
+                    tvName.getText().toString().trim(),
+                    Double.valueOf(tvPrice.getText().toString().trim()),
+                    Double.valueOf(etPriceMovement.getText().toString().trim()));
+
+            //move back to AlertsFragment
+            moveToAlertsHome();
+
+
+
+        }
     }
 
     void getStockPrice(String stock) {

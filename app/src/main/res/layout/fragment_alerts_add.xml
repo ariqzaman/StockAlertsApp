@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="0dp"
-            android:background="#30D8C4"
+            android:background="#FFEB3B"
             android:gravity="center"
             android:text="Add Alert"
             android:textSize="30sp" />
@@ -143,7 +143,7 @@
 
             android:layout_below="@+id/etPriceMovement"
             android:layout_marginTop="100dp"
-            android:backgroundTint="#30D8C4"
+            android:backgroundTint="#93C5B9"
             android:text="Set Alert"
             app:icon="@drawable/ic_add_alert_24"
             app:iconGravity="textEnd" />
@@ -154,7 +154,7 @@
             android:layout_height="40dp"
             android:layout_below="@+id/view2"
             android:layout_marginTop="0dp"
-            android:background="#93C5B9"
+            android:background="#FFEB3B"
             android:gravity="center"
             android:text="Enter Amount For Price Movement"
             android:textSize="20sp" />
