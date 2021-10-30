@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,14 +18,19 @@ import java.util.List;
 
 public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoliostockrecycleradapter.MyViewHolder>{
 
-    private Context context;
-    private ArrayList book_id,book_title,book_author,book_pages;
+    private final Context context;
+    private final ArrayList book_id;
+    private final ArrayList book_title;
+    private final ArrayList book_author;
+    private final ArrayList book_pages;
+    private Button button;
     portfoliostockrecycleradapter(Context context,ArrayList book_id, ArrayList book_title, ArrayList book_author, ArrayList book_pages){
         this.context = context;
         this.book_id = book_id;
         this.book_title = book_title;
         this.book_author = book_author;
         this.book_pages = book_pages;
+
     }
 
     @NonNull
@@ -47,15 +53,31 @@ public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoli
     public int getItemCount(){
         return book_id.size();
     }
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView book_id_txt, book_title_txt, book_author_txt, book_pages_txt;
+        Button button;
+
         public MyViewHolder(@NonNull View itemView){
             super(itemView);
             book_id_txt = itemView.findViewById(R.id.stockinfotextview);
             book_title_txt = itemView.findViewById(R.id.stockinfotextviewprice);
             book_author_txt = itemView.findViewById(R.id.portfoliorecyclerstockamount);
             book_pages_txt = itemView.findViewById(R.id.textView7);
+            button = itemView.findViewById(R.id.deletebutton);
+            button.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view){
+                    final myportfoliodatabase myDB = new myportfoliodatabase(view.getContext());
+                    String dennis = book_id_txt.getText().toString();
+                    myDB.deleteOneRow(dennis);
+                }
+
+
+
+            });
         }
+
     }
 
     /*
