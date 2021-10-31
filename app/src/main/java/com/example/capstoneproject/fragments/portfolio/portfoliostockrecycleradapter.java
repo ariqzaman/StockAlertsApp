@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,7 +31,7 @@ public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoli
         this.book_title = book_title;
         this.book_author = book_author;
         this.book_pages = book_pages;
-
+        //portfolioobject = new portfolio();
     }
 
     @NonNull
@@ -66,14 +67,17 @@ public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoli
             book_author_txt = itemView.findViewById(R.id.portfoliorecyclerstockamount);
             book_pages_txt = itemView.findViewById(R.id.textView7);
             button = itemView.findViewById(R.id.deletebutton);
-            button.setOnClickListener(new View.OnClickListener(){
+            LinearLayout mainLayout;
+            /*button.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view){
                     final myportfoliodatabase myDB = new myportfoliodatabase(view.getContext());
                     String dennis = book_id_txt.getText().toString();
                     myDB.deleteOneRow(dennis);
-
                 }
+
+             */
+            mainLayout = itemView.findViewById(R.id.)
 
 
 

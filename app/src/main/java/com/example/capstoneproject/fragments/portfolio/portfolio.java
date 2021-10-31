@@ -106,7 +106,7 @@ public class portfolio extends Fragment {
                 tryredraw();
         }
         });
-
+/*
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
 
@@ -134,6 +134,9 @@ public class portfolio extends Fragment {
                 }
 
         }, 5000, 65000);
+
+
+ */
         return view;
     }
 
