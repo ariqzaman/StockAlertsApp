@@ -72,6 +72,7 @@ public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoli
                     final myportfoliodatabase myDB = new myportfoliodatabase(view.getContext());
                     String dennis = book_id_txt.getText().toString();
                     myDB.deleteOneRow(dennis);
+
                 }
 
 

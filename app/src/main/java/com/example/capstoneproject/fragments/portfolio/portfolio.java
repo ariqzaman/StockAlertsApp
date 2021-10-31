@@ -113,10 +113,27 @@ public class portfolio extends Fragment {
             @Override
             public void run() {
                 updatestock();
+
                 tryredraw();
             }
 
         }, 60000, 61000);
+        Timer timer2 = new Timer();
+        timer2.scheduleAtFixedRate(new TimerTask() {
+
+                @Override
+                public void run() {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tryredraw();
+                        }
+                    });
+
+
+                }
+
+        }, 5000, 65000);
         return view;
     }
 
@@ -182,6 +199,7 @@ public class portfolio extends Fragment {
 
 
     void storeDatainArrays() {
+
         Cursor cursor = myDB.readAllData();
 
         if (cursor.getCount() == 0) {
@@ -239,16 +257,22 @@ public class portfolio extends Fragment {
     }
 
     void tryredraw(){
-        recyclerview.setAdapter(null);
-        recyclerview.setLayoutManager(null);
-        book_id = new ArrayList<>();
-        book_author = new ArrayList<>();
-        book_title = new ArrayList<>();
-        book_pages = new ArrayList<>();
-        storeDatainArrays();
-        portfoliostockadapter = new portfoliostockrecycleradapter(getActivity(), book_id, book_title, book_author, book_pages);
-        recyclerview.setAdapter(portfoliostockadapter);
-        recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                recyclerview.setAdapter(null);
+                recyclerview.setLayoutManager(null);
+                book_id = new ArrayList<>();
+                book_author = new ArrayList<>();
+                book_title = new ArrayList<>();
+                book_pages = new ArrayList<>();
+                storeDatainArrays();
+                portfoliostockadapter = new portfoliostockrecycleradapter(getActivity(), book_id, book_title, book_author, book_pages);
+                recyclerview.setAdapter(portfoliostockadapter);
+                recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
+            }
+        });
+
     }
 
     void updatestock(){
