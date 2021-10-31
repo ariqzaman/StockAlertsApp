@@ -8,10 +8,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.capstoneproject.AlertsAdapter;
 import com.example.capstoneproject.R;
+import com.example.capstoneproject.fragments.AlertsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,18 @@ public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoli
                     final myportfoliodatabase myDB = new myportfoliodatabase(view.getContext());
                     String dennis = book_id_txt.getText().toString();
                     myDB.deleteOneRow(dennis);
+
+
+
+                    //from AlertsAdapter - start
+                    AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                    portfolio fragment = new portfolio();
+
+                    //refresh the fragment when you delete a recyclerview/database item
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
+                    //activity.getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+
+                    // -end
 
                 }
 
