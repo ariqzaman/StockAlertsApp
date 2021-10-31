@@ -145,7 +145,6 @@ public class portfolio extends Fragment {
             @Override
             public void onClick(View view) {
                 updatestock();
-                tryredraw();
             }
         });
         return view;
@@ -252,6 +251,7 @@ public class portfolio extends Fragment {
                     }
 
 
+
                 } catch (JSONException e) {
 
                     e.printStackTrace();
@@ -339,6 +339,7 @@ public class portfolio extends Fragment {
                         }
 
                     }
+                    tryredraw();
                 } catch (JSONException e) {
                     System.out.println("JSONEXCEPTION1");
                     e.printStackTrace();
