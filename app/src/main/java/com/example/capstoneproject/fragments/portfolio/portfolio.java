@@ -4,18 +4,15 @@ import static android.icu.lang.UCharacter.toUpperCase;
 
 import android.app.AlertDialog;
 import android.database.Cursor;
-import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 import okhttp3.Headers;
@@ -74,52 +73,53 @@ public class portfolio extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_portfolio, container, false);
         gotofragment2 = view.findViewById(R.id.addstockcryptobutton);
         myDB = new myportfoliodatabase(getActivity());
+        //uncomment for actual release of the app ig
+        //updatestock();
         book_id = new ArrayList<>();
         book_author = new ArrayList<>();
         book_title = new ArrayList<>();
         book_pages = new ArrayList<>();
         testbutton = view.findViewById(R.id.testbutton);
+
+        System.out.println("test");
         storeDatainArrays();
-        //recycleview
         recyclerview = view.findViewById(R.id.recycleviewstocks);
         portfoliostockadapter = new portfoliostockrecycleradapter(getActivity(), book_id, book_title, book_author, book_pages);
         recyclerview.setAdapter(portfoliostockadapter);
         recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //recyclerview = view.findViewById(R.id.recycleviewstocks);
-        //stocksnames = new ArrayList<>();
 
-
-        //setAdapter();
         gotofragment2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Navigation.findNavController(view).navigate(R.id.action_nav_portfolio_to_addstockcrypto2);
                 createNewDialog();
 
             }
         });
         testbutton.setOnClickListener(new View.OnClickListener(){
-
             @Override
             public void onClick(View view){
-                testthing2();
-            }
+                System.out.println("AAAAAAAAA");
+                tryredraw();
+        }
         });
 
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                updatestock();
+                tryredraw();
+            }
+
+        }, 60000, 61000);
         return view;
     }
-/*
-    private void setAdapter(){
-        portfoliostockrecycleradapter adapter = new portfoliostockrecycleradapter(stocksnames);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        recyclerview.setLayoutManager(layoutManager);
-        recyclerview.setItemAnimator(new DefaultItemAnimator());
-        recyclerview.setAdapter(adapter);
-    }
-*/
+
 
     //this is for the add stock popup
     public void createNewDialog() {
@@ -154,7 +154,7 @@ public class portfolio extends Fragment {
                             JSONObject p = results.getJSONObject(toUpperCase(popup_stockname.getText().toString().trim()));
                             p = p.getJSONObject("quote");
                             myDB.addstock(popup_stockname.getText().toString().trim(), p.getString("latestPrice"), Integer.parseInt(popup_stockamount.getText().toString()));
-
+                            tryredraw();
 
                         } catch (JSONException e) {
 
@@ -172,11 +172,6 @@ public class portfolio extends Fragment {
                     }
                 });
 
-                /*stocknames.add(toUpperCase(popup_stockname.getText().toString()));
-                stockamounts.add(Integer.valueOf(popup_stockamount.getText().toString()));
-                stocksnames.add(new portfoliostock(toUpperCase(popup_stockname.getText().toString()),"5",2));
-                //setAdapter(); */
-
 
                 dialog.dismiss();
 
@@ -184,129 +179,144 @@ public class portfolio extends Fragment {
         });
     }
 
-    //test functions
-    /*
-    private void setstockinfo(){
-        stocksnames.add(new portfoliostock("AAPL","5",2));
-        stocksnames.add(new portfoliostock("F","6",2));
-        stocksnames.add(new portfoliostock("CLF","7",2));
-    }
-    */
+
+
     void storeDatainArrays() {
         Cursor cursor = myDB.readAllData();
-        String stocktickers = "";
+
         if (cursor.getCount() == 0) {
             Toast.makeText(getActivity(), "No data", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
                 book_id.add(cursor.getString(0));
-
                 book_title.add(cursor.getString(1));
                 book_author.add(cursor.getString(2));
                 book_pages.add(cursor.getString(3));
+
+            }
+
+        }
+
+    }
+
+    void returnstock(String stocknames,Vector<String> stockss) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        String testapi = "https://api.twelvedata.com/price?symbol=" + stocknames + "&apikey=f0b21df90101477184b43faf1d393bc9";
+        System.out.println(testapi);
+        ArrayList<String> testing = new ArrayList<>();
+        client.get(testapi, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+
+                JSONObject jsonObject = json.jsonObject;
+                try {
+                    JSONObject results = jsonObject;
+                    for(int i=0;i<stockss.size();i++){
+                        JSONObject p = results.getJSONObject(stockss.get(i));
+                        String symbol = p.getString("price");
+                        testing.add(p.getString("price"));
+                        System.out.println(testing.size());
+                        System.out.println(symbol);
+                    }
+
+
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
+
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+
+            }
+        });
+
+
+    }
+
+    void tryredraw(){
+        recyclerview.setAdapter(null);
+        recyclerview.setLayoutManager(null);
+        book_id = new ArrayList<>();
+        book_author = new ArrayList<>();
+        book_title = new ArrayList<>();
+        book_pages = new ArrayList<>();
+        storeDatainArrays();
+        portfoliostockadapter = new portfoliostockrecycleradapter(getActivity(), book_id, book_title, book_author, book_pages);
+        recyclerview.setAdapter(portfoliostockadapter);
+        recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    void updatestock(){
+        Cursor cursor = myDB.readAllData();
+        String stocknamesb = "";
+        ArrayList<String> stonks = new ArrayList<>();
+        ArrayList<String> testvector = new ArrayList();
+        if (cursor.getCount() == 0) {
+            Toast.makeText(getActivity(), "No data", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+
+                stocknamesb = stocknamesb + cursor.getString(1).toString() + ",";
+                stonks.add(cursor.getString(1));
             }
         }
-    }
-
-    void returnstock(String stockname) {
         AsyncHttpClient client = new AsyncHttpClient();
-        String testapi = "https://api.twelvedata.com/price?symbol=AAPL,AMZN&apikey=f0b21df90101477184b43faf1d393bc9";
-        client.get(testapi, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Headers headers, JSON json) {
-
-                JSONObject jsonObject = json.jsonObject;
-                try {
-                    JSONObject results = jsonObject;
-                    JSONObject p = results.getJSONObject("AMZN");
-                    String symbol = p.getString("price");
-                    System.out.println(symbol);
-                    System.out.println("test");
-                } catch (JSONException e) {
-
-                    e.printStackTrace();
-
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-
-            }
-        });
-    }
-    /*
-    void testthing(){
-            Cursor cursor = myDB.readAllData();
-
-            String stocktickers = "";
-            if (cursor.getCount() == 0) {
-                Toast.makeText(getActivity(), "No data", Toast.LENGTH_SHORT).show();
-            } else {
-                while (cursor.moveToNext()) {
-                    stocktickers = stocktickers + cursor.getString(1) + ",";
-
-                }
-            }
-            JSONObject jsonObject;
-        System.out.println(stocktickers);
-        AsyncHttpClient client = new AsyncHttpClient();
-        String testapi = "https://api.twelvedata.com/price?symbol=AAPL,AMZN&apikey=f0b21df90101477184b43faf1d393bc9";
-        client.get(testapi, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Headers headers, JSON json) {
-                jsonObject = json.jsonObject;
-                try {
-                    JSONObject results = jsonObject;
-                    JSONObject p = results.getJSONObject("AMZN");
-                    String symbol = p.getString("price");
-                    System.out.println(symbol);
-                    System.out.println("test");
-                } catch (JSONException e) {
-
-                    e.printStackTrace();
-                }
-            }
-            @Override
-            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-
-            }
-        });
-    }
-*/
-    void testthing2(){
-        AsyncHttpClient client = new AsyncHttpClient();
-        String testapi = "https://cloud.iexapis.com/stable/stock/market/batch?symbols=aapl,fb&types=quote&range=1m&last=5&token=sk_312389e990ff49af9d13a20cc770ec95";
+        String testapi = "https://api.twelvedata.com/price?symbol=" + stocknamesb + "&apikey=f0b21df90101477184b43faf1d393bc9";
+        System.out.println(testapi);
         client.get(testapi, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 JSONObject jsonObject = json.jsonObject;
+
                 try {
                     JSONObject results = jsonObject;
-                    JSONObject p =results.getJSONObject("AAPL");
-                    p = p.getJSONObject("quote");
-                    String symbol = p.getString("latestPrice");
-                    System.out.println(symbol);
+                    for(int i=0;i<stonks.size();i++)
+                    {
+
+                        JSONObject p = results.getJSONObject(stonks.get(i));
+
+                       testvector.add(p.getString("price"));
 
 
-                    System.out.println("test");
+                    }
+                    System.out.println(testvector.size());
+                    myportfoliodatabase testdbthing = new myportfoliodatabase(getActivity());
+                    Cursor cursor3 = myDB.readAllData();
+                    int testnum = 0;
+                    if (cursor3.getCount() == 0) {
+                        Toast.makeText(getActivity(), "No data", Toast.LENGTH_SHORT).show();
+                    } else {
+                        while (cursor3.moveToNext()) {
+                            testdbthing.updateData(cursor3.getString(0),
+                                    cursor3.getString(1),
+                                    testvector.get(testnum),
+                                    cursor3.getString(3));
+                            System.out.println(testvector.get(testnum));
+                            testnum = testnum + 1;
+                        }
+
+                    }
                 } catch (JSONException e) {
-
+                    System.out.println("JSONEXCEPTION1");
                     e.printStackTrace();
-
-
                 }
-
             }
-
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-
+                System.out.println("JSONEXCEPTION2");
             }
         });
+
+
+
+
     }
+
 
 }
 

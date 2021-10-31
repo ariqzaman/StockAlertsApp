@@ -49,6 +49,7 @@ public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoli
         holder.book_pages_txt.setText(String.valueOf(book_pages.get(position)));
     }
 
+
     @Override
     public int getItemCount(){
         return book_id.size();
