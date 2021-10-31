@@ -42,14 +42,25 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/testbutton"
+        android:id="@+id/refreshbutton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Force refresh"
+        android:text="Refresh stock prices"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/teestbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="210dp"
+        android:layout_marginTop="356dp"
+        android:text="testing"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/recycleviewstocks"
+        app:layout_constraintTop_toTopOf="@+id/recycleviewstocks" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
