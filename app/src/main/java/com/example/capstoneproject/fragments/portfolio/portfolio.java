@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.capstoneproject.R;
+import com.example.capstoneproject.fragments.AlertsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
@@ -107,6 +108,7 @@ public class portfolio extends Fragment {
         }
         });
 
+        /*
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
 
@@ -134,6 +136,18 @@ public class portfolio extends Fragment {
                 }
 
         }, 5000, 65000);
+
+
+         */
+
+        Button refreshbutton = view.findViewById(R.id.refreshbutton);
+        refreshbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updatestock();
+                tryredraw();
+            }
+        });
         return view;
     }
 
