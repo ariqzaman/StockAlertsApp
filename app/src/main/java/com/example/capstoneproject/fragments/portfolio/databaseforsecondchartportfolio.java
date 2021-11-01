@@ -48,16 +48,7 @@ public class databaseforsecondchartportfolio extends SQLiteOpenHelper {
         return cursor;
     }
 
-    void updateData(String row_id, String stock_name, String total_amount, String industry,String date_entry){
 
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(AMOUNT, total_amount);
-        cv.put(DATE_ENTRY, date_entry);
-
-        long result = db.update(TABLE_NAME, cv, "id=?", new String[]{row_id});
-
-    }
 
     void deleteOneRow(String row_id){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -69,10 +60,10 @@ public class databaseforsecondchartportfolio extends SQLiteOpenHelper {
         }
     }
 
-    void addentry( String stock_name, String total_amount, String industry,String date_entry){
+    void addentry( String balance, String date_entry){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(AMOUNT, total_amount);
+        cv.put(AMOUNT, balance);
         cv.put(DATE_ENTRY, date_entry);
         long result = db.insert(TABLE_NAME, null, cv);
         if(result == -1){

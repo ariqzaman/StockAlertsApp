@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -40,7 +41,6 @@ public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoli
         this.book_title = book_title;
         this.book_author = book_author;
         this.book_pages = book_pages;
-        //portfolioobject = new portfolio();
     }
 
     @NonNull
@@ -72,8 +72,25 @@ public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoli
             public void onClick(View view) {
                 //go to ariq's graph idk how to yet
                 System.out.println("test");
-                Fragment fragment;
-                fragment = new StockGraphFragment();
+
+                //System.out.println("test");
+                // Fragment fragment;
+                //fragment = new StockGraphFragment();
+
+
+                //from AlertsAdapter - start
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                StockGraphFragment fragment = new StockGraphFragment();
+                //using bundle to pass data to another fragment
+                Bundle args = new Bundle();
+                //key, value
+                args.putString("stockTicker", String.valueOf(book_title.get(position)));
+                args.putString("graphTime", "5min");
+                System.out.println(book_title.get(position)+"HELLO");
+                fragment.setArguments(args);
+                //add a stack so we can click back button to go back
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+                // - end
             }
         });
     }
