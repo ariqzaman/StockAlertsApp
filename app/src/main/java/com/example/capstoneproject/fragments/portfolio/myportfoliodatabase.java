@@ -81,6 +81,8 @@ public class myportfoliodatabase extends SQLiteOpenHelper {
         }else{
             Toast.makeText(context, "Successfully Deleted.", Toast.LENGTH_SHORT).show();
         }
+
+
     }
 
 

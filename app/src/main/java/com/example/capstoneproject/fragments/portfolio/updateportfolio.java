@@ -2,6 +2,7 @@ package com.example.capstoneproject.fragments.portfolio;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.capstoneproject.R;
+import com.example.capstoneproject.fragments.AlertsFragment;
 
 public class updateportfolio extends AppCompatActivity {
     EditText title_input, pages_input;
@@ -45,6 +47,8 @@ public class updateportfolio extends AppCompatActivity {
                 pages = pages_input.getText().toString().trim();
                 myDB.updateData(id, title, author, pages);
                 finish();
+
+
             }
         });
         delete_button.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +61,10 @@ public class updateportfolio extends AppCompatActivity {
         });
 
     }
+
+
+
+
 
     void getAndSetIntentData() {
         if (getIntent().hasExtra("id") && getIntent().hasExtra("title") &&
@@ -89,4 +97,7 @@ public class updateportfolio extends AppCompatActivity {
             }
         });
     }
+
+
+
 }

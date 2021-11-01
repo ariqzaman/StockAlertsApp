@@ -3,6 +3,7 @@ package com.example.capstoneproject.fragments.portfolio;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,10 +73,27 @@ public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoli
             @Override
             public void onClick(View view) {
                 //go to ariq's graph idk how to yet
-                System.out.println("test");
-                Fragment fragment;
-                fragment = new StockGraphFragment();
+                //System.out.println("test");
+               // Fragment fragment;
+                //fragment = new StockGraphFragment();
+
+
+                //from AlertsAdapter - start
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                StockGraphFragment fragment = new StockGraphFragment();
+                //using bundle to pass data to another fragment
+                Bundle args = new Bundle();
+                //key, value
+                args.putString("stockTicker", String.valueOf(book_title.get(position)));
+                args.putString("graphTime", "5min");
+                System.out.println(book_title.get(position)+"HELLO");
+                fragment.setArguments(args);
+                //add a stack so we can click back button to go back
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+                // - end
             }
+
+
         });
     }
 
