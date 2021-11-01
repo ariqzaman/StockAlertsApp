@@ -183,7 +183,7 @@ public class portfolio extends Fragment {
                             JSONObject results = jsonObject;
                             JSONObject p = results.getJSONObject(toUpperCase(popup_stockname.getText().toString().trim()));
                             p = p.getJSONObject("quote");
-                            myDB.addstock(popup_stockname.getText().toString().trim(), p.getString("latestPrice"), Integer.parseInt(popup_stockamount.getText().toString()));
+                            myDB.addstock(popup_stockname.getText().toString().trim(), p.getString("latestPrice"), Integer.parseInt(popup_stockamount.getText().toString()),"placeholder");
                             tryredraw();
 
                         } catch (JSONException e) {
