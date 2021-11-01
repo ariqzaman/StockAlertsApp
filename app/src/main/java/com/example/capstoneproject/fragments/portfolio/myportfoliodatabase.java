@@ -20,6 +20,7 @@ public class myportfoliodatabase extends SQLiteOpenHelper {
     private static final String COLUMN_TITLE = "stock_title";
     private static final String COLUMN_AUTHOR = "stock_price";
     private static final String COLUMN_PAGES = "stock_quantity";
+    private static final String stock_category = "sector";
 
     public myportfoliodatabase(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,7 +49,7 @@ public class myportfoliodatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    void addstock(String Title,String Price, int Quantity){
+    void addstock(String Title,String Price, int Quantity,String sector){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_TITLE,Title);
