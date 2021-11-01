@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.capstoneproject.R;
-import com.example.capstoneproject.fragments.AlertsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
@@ -48,13 +47,14 @@ public class portfolio extends Fragment {
     Vector<Integer> stockamounts = new Vector<Integer>();
     Vector<String> stocknames = new Vector<String>();
 
-
+    databaseforportfoliograph portfolioDB;
     myportfoliodatabase myDB;
     ArrayList<String> book_id, book_title, book_author, book_pages;
 
     FloatingActionButton gotofragment2; //possibly going to be useless
 
     Button testbutton;
+    Button testbutton2;
     //for recyclerview
     private ArrayList<portfoliostock> stocksnames;
     portfoliostockrecycleradapter portfoliostockadapter;
@@ -78,18 +78,18 @@ public class portfolio extends Fragment {
         View view = inflater.inflate(R.layout.fragment_portfolio, container, false);
         gotofragment2 = view.findViewById(R.id.addstockcryptobutton);
         myDB = new myportfoliodatabase(getActivity());
+        portfolioDB = new databaseforportfoliograph(getActivity());
         //uncomment for actual release of the app ig
         //updatestock();
         book_id = new ArrayList<>();
         book_author = new ArrayList<>();
         book_title = new ArrayList<>();
         book_pages = new ArrayList<>();
-        testbutton = view.findViewById(R.id.testbutton);
-
-        System.out.println("test");
+        testbutton = view.findViewById(R.id.refreshbutton);
+       // testbutton2 = view.findViewById(R.id.teestbutton);
         storeDatainArrays();
         recyclerview = view.findViewById(R.id.recycleviewstocks);
-        portfoliostockadapter = new portfoliostockrecycleradapter(getActivity(), book_id, book_title, book_author, book_pages);
+        portfoliostockadapter = new portfoliostockrecycleradapter(getActivity(),getActivity(), book_id, book_title, book_author, book_pages);
         recyclerview.setAdapter(portfoliostockadapter);
         recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -103,12 +103,20 @@ public class portfolio extends Fragment {
         testbutton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                System.out.println("AAAAAAAAA");
-                tryredraw();
+                updatestock();
         }
         });
-
         /*
+        testbutton2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                System.out.println("test2");
+
+    }
+        });
+        */
+
+/*
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
 
@@ -138,15 +146,7 @@ public class portfolio extends Fragment {
         }, 5000, 65000);
 
 
-         */
-
-        Button refreshbutton = view.findViewById(R.id.refreshbutton);
-        refreshbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updatestock();
-            }
-        });
+ */
         return view;
     }
 
@@ -183,7 +183,7 @@ public class portfolio extends Fragment {
                             JSONObject results = jsonObject;
                             JSONObject p = results.getJSONObject(toUpperCase(popup_stockname.getText().toString().trim()));
                             p = p.getJSONObject("quote");
-                            myDB.addstock(popup_stockname.getText().toString().trim(), p.getString("latestPrice"), Integer.parseInt(popup_stockamount.getText().toString()),"placeholder");
+                            myDB.addstock(popup_stockname.getText().toString().trim(), p.getString("latestPrice"), Integer.parseInt(popup_stockamount.getText().toString()),returnsector(popup_stockname.getText().toString().trim()));
                             tryredraw();
 
                         } catch (JSONException e) {
@@ -207,6 +207,33 @@ public class portfolio extends Fragment {
 
             }
         });
+    }
+
+    String returnsector(String sector){
+        AsyncHttpClient client = new AsyncHttpClient();
+        String testapi = "https://financialmodelingprep.com/api/v3/profile/AAPL?apikey=d610507a84e6b54992411a018867a0b7";
+        System.out.println(testapi);
+        client.get(testapi, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                JSONObject jsonObject = json.jsonObject;
+                try {
+                    JSONObject results = jsonObject;
+                    JSONObject p = results.getJSONObject("sector");
+                } catch (JSONException e) {
+                    System.out.println("JSONEXCEPTION1");
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                System.out.println("JSONEXCEPTION2");
+            }
+        });
+
+
+
+        return "a";
     }
 
 
@@ -250,8 +277,7 @@ public class portfolio extends Fragment {
                         System.out.println(symbol);
                     }
 
-
-
+                tryredraw();
                 } catch (JSONException e) {
 
                     e.printStackTrace();
@@ -281,7 +307,7 @@ public class portfolio extends Fragment {
                 book_title = new ArrayList<>();
                 book_pages = new ArrayList<>();
                 storeDatainArrays();
-                portfoliostockadapter = new portfoliostockrecycleradapter(getActivity(), book_id, book_title, book_author, book_pages);
+                portfoliostockadapter = new portfoliostockrecycleradapter(getActivity(),getActivity(), book_id, book_title, book_author, book_pages);
                 recyclerview.setAdapter(portfoliostockadapter);
                 recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
             }
@@ -337,9 +363,8 @@ public class portfolio extends Fragment {
                             System.out.println(testvector.get(testnum));
                             testnum = testnum + 1;
                         }
-
+                        tryredraw();
                     }
-                    tryredraw();
                 } catch (JSONException e) {
                     System.out.println("JSONEXCEPTION1");
                     e.printStackTrace();
