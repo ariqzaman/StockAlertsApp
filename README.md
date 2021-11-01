@@ -5,7 +5,6 @@ Stock and Crypto Alerts App for Hunter College CSCI Capstone course.
 
 Group members:
 
-
 [Ariq Zaman](https://github.com/ariqzaman) - Graphs
 
 [Brian Nan](https://github.com/DogEnjoyer) - Portfolio
