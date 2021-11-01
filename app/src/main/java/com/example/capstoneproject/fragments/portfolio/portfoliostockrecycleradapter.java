@@ -7,20 +7,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.capstoneproject.AlertsAdapter;
 import com.example.capstoneproject.R;
 import com.example.capstoneproject.fragments.StockGraphFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoliostockrecycleradapter.MyViewHolder>{
 
@@ -33,14 +31,14 @@ public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoli
     private Button button;
     private Activity activity;
     int position;
-    portfoliostockrecycleradapter(Activity activity,Context context,ArrayList book_id, ArrayList book_title, ArrayList book_author, ArrayList book_pages){
+    portfoliostockrecycleradapter(FragmentActivity activity, Context context, ArrayList book_id, ArrayList book_title, ArrayList book_author, ArrayList book_pages){
         this.activity = activity;
         this.context = context;
         this.book_id = book_id;
         this.book_title = book_title;
         this.book_author = book_author;
         this.book_pages = book_pages;
-        //portfolioobject = new portfolio();
+
     }
 
     @NonNull
@@ -110,11 +108,10 @@ public class portfoliostockrecycleradapter extends RecyclerView.Adapter<portfoli
                     intent.putExtra("pages", String.valueOf(book_pages.get(position)));
                     activity.startActivityForResult(intent, 1);
                 }
+
+
+
             });
-
-
-
-
         }
 
     }

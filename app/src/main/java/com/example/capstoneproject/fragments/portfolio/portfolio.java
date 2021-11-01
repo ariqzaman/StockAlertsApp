@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.capstoneproject.R;
+import com.example.capstoneproject.fragments.AlertsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
@@ -274,7 +275,9 @@ public class portfolio extends Fragment {
                         System.out.println(symbol);
                     }
 
-                tryredraw();
+
+
+
                 } catch (JSONException e) {
 
                     e.printStackTrace();

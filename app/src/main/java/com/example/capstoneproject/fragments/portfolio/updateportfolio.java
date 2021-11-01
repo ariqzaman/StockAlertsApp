@@ -44,6 +44,15 @@ public class updateportfolio extends AppCompatActivity {
                 title = title_input.getText().toString().trim();
                 pages = pages_input.getText().toString().trim();
                 myDB.updateData(id, title, author, pages);
+                //from AlertsAdapter - start
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                portfolio fragment = new portfolio();
+
+                //refresh the fragment when you delete a recyclerview/database item
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
+                //activity.getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+
+                // -end
                 finish();
             }
         });
@@ -52,6 +61,15 @@ public class updateportfolio extends AppCompatActivity {
             public void onClick(View view) {
                 myportfoliodatabase myDB = new myportfoliodatabase(updateportfolio.this);
                 myDB.deleteOneRow(id);
+                //from AlertsAdapter - start
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                portfolio fragment = new portfolio();
+
+                //refresh the fragment when you delete a recyclerview/database item
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
+                //activity.getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(null).commit();
+
+                // -end
                 finish();
             }
         });
@@ -77,16 +95,5 @@ public class updateportfolio extends AppCompatActivity {
         }
     }
 
-    void confirmDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Delete " + title + " ?");
-        builder.setMessage("Are you sure you want to delete " + title + " ?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //myDB.deleteOneRow(id);
-                finish();
-            }
-        });
-    }
+
 }
